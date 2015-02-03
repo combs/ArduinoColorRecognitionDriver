@@ -16,10 +16,26 @@
 ColorRecognitionTCS230 ColorRecognitionTCS230::instance;
 
 void ColorRecognitionTCS230::initialize(unsigned char outPin,
+        unsigned char s2Pin, unsigned char s3Pin, unsigned long frequency) {
+    this->s2Pin = s2Pin;
+    this->s3Pin = s3Pin;
+    this->outPin = outPin;
+    this->period = period;
+    this->currentFilter = CLEAR_FILTER;
+    pinMode(s2Pin, OUTPUT);
+    pinMode(s3Pin, OUTPUT);
+    pinMode(outPin, INPUT);
+    Timer1.initialize();
+    Timer1.attachInterrupt(ColorRecognitionTCS230::timerInterruptHandler);
+    attachInterrupt((outPin - 2), ColorRecognitionTCS230::externalInterruptHandler, RISING);
+}
+
+void ColorRecognitionTCS230::initialize(unsigned char outPin,
         unsigned char s2Pin, unsigned char s3Pin) {
     this->s2Pin = s2Pin;
     this->s3Pin = s3Pin;
     this->outPin = outPin;
+    this->period = 1000000;
     this->currentFilter = CLEAR_FILTER;
     pinMode(s2Pin, OUTPUT);
     pinMode(s3Pin, OUTPUT);
@@ -59,7 +75,7 @@ void ColorRecognitionTCS230::timerInterruptHandler() {
             break;
     }
     instance.count = 0;
-    Timer1.setPeriod(1000000);
+    Timer1.setPeriod(instance.period);
 }
 
 unsigned char ColorRecognitionTCS230::getRed() {

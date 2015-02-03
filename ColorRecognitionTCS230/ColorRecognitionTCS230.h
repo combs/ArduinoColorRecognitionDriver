@@ -112,6 +112,12 @@ private:
      * NOTE: It must be the 2 or 3 pin to support external interrupts.
      */
     unsigned char outPin;
+    
+    /**
+     * Holds the number of microseconds used for each channel's reading.
+     */
+     
+    unsigned long period;
 
     /**
      * Holds the number of interrupts of the current filter.
@@ -163,9 +169,13 @@ public:
      *                              pin to support external interrupts).
      * @param s2Pin                 The s2 pin.
      * @param s3Pin                 The s3 pin.
+     * @param [frequency=1000000]   Microseconds allotted to read each channel.
      * 
      * @return 
      */
+    void initialize(unsigned char outPin, unsigned char s2Pin,
+            unsigned char s3Pin, unsigned long frequency);
+
     void initialize(unsigned char outPin, unsigned char s2Pin,
             unsigned char s3Pin);
 
